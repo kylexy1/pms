@@ -136,5 +136,66 @@ if(isset($_POST['delete'])){
     }
 }
 
+if (isset($_POST["level"])){
+    $level=$database->escape_value(trim($_POST["level"]));
+    $keyword=strtolower($level);
+    if($keyword==""){
+
+        $st=$database->query("SELECT * FROM user WHERE status = 'active'");
+    }
+    else{
+        $st =$database->query("SELECT * from user where lower (`fname`) LIKE '$keyword%' OR lower (`lname`) LIKE '$keyword%' OR lower (`mname`) LIKE '$keyword%' OR lower (`email`) LIKE '$keyword%' AND status='active'");
+
+    }
+    $html="";
+    $count=1;
+
+    while ($row=$database->fetch_array($st)) {
+        $fname=$row["fname"];
+        $lname=$row["lname"];
+        $mname=$row["mname"];
+        $email=$row["email"];
+        $u=$row['username'];
+        $level=$row["level"];
+        $status=$row["active"];
+        $avatar=$row["avatar"];
+        $inst=$row['id_institution'];
+        $show=" <tr><td>$count</td>";
+        if (file_exists("../uploads/user/".$u."/".$avatar)){
+            $src="../uploads/user/".$u."/".$avatar;
+        }
+        else{
+            $src="images/default_profile.png";
+        }
+        $show.="<td><img src='$src' class='avatar' alt='Avatar'> $fname $mname $lname</td>
+                <td>$email</td>
+                <td>$u</td>";
+        if($status==0){
+            $show.="<td><span class='status badge badge-danger'>Inactive</td>";}
+        else if($status==1) {
+            $show.="<td><span class='status badge badge-primary'>Active</td>";
+        }
+
+        if($row['id_institution']==0){
+            $show.= "<td>MOFA</td>"; }
+        else{
+            $i=$database->get_item('institution_details','id',$row['id_institution'],'name');
+            $show.="<td>$i</td>";
+        }
+        $i=$database->get_item("level","id",$row['level'],"name");
+        $show.="<td>$i</td>
+        <td><a href='#' class='view' title='View Details' data-toggle='tooltip'><i class='material-icons'>&#xE5C8;</i></a></td>
+        </tr>";
+        $count++;
+        $html.=$show;
+    }
+    if($html==""){
+        echo "<tr>No user found</tr>";
+    }
+    else {
+        echo $html;
+    }
+}
+
 
 

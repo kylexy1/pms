@@ -183,7 +183,7 @@ require_once '../web-config/database.php';
                             <input type="text" name="email" class="form-control" id="email" placeholder="Email" value="<?=check_if('email');?>">
                         </div>
                         <div class="form-group">
-                            <label for="name">Telephone<span class="required-mark">*</span></label>
+                            <label for="name">Telephone</label>
                             <input type="text" class="form-control" name="telephone" id="telephone" placeholder="telephone"  value="<?=check_if('telephone');?>">
                         </div>
                         <div class="form-group">
@@ -274,11 +274,9 @@ require_once '../web-config/database.php';
     $("#country option[value=178]").prop('selected', true);
     $(function() {
 
-        $.validator.addMethod('phoneValid', function (value) {
-            return /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test(value);
-        }, 'Enter a valid Phone number');
-
-
+        $.validator.addMethod("phoneCheck",function (value) {
+            return /^\+?\d{10,13}$/.test(value) || value ==="";
+        },' Enter a valid Phone number');
         $("#form").validate({
             rules: {
                 given_names: "required",
@@ -287,8 +285,7 @@ require_once '../web-config/database.php';
                 pass_no: "required",
                 pob: "required",
                 telephone: {
-                    required:true,
-                    phoneValid : true
+                    phoneCheck : true
                 },
                 mother_name: "required",
                 father_name: "required",

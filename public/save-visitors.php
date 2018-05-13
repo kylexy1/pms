@@ -52,15 +52,24 @@ if (isset($_POST['save2'])){
     $embassy = $_POST['embassy'];
     $visitor = $_POST['visitor'];
     $protocol= $database->escape_value($_POST['protocol']);
+    if ($_POST['visit']!==""){
+        $visit = $_POST['visit'];
+        $sql = "UPDATE visit  SET visitor=$visitor,reason='$reason',host_person='$host_person',arrival='$arrival',departure='$departure',id_embassy='$embassy',protocol='$protocol' WHERE id=$visit";
+        if ($database->query($sql)){
+            $id=$Hash->encrypt($visitor);
+            header("location:register-visitor-step3?id=$visitor");
+        }
 
-    $sql = "INSERT INTO visit(reason,host_person,arrival,departure,id_embassy,protocol) VALUES ('$reason','$host_person','$arrival','$departure','$embassy','$protocol')";
+    }
+    else{
+    $sql = "INSERT INTO visit(visitor,reason,host_person,arrival,departure,id_embassy,protocol) VALUES ($visitor,'$reason','$host_person','$arrival','$departure','$embassy','$protocol')";
     if ($database->query($sql)) {
         $id = $database->inset_id();
         $database->query("UPDATE diplomats SET visit_details=$id WHERE id=$visitor");
-        $id=$Hash->encrypt($id);
+        $id=$Hash->encrypt($visitor);
         header("location:register-visitor-step3?id=$id");
     }
-
+    }
 }
 if (isset($_POST['save3'])){
     $names = $database->escape_value($_POST['names']);
@@ -72,7 +81,7 @@ if (isset($_POST['save3'])){
     if ($database->query($sql)) {
         $id=$Hash->encrypt($visitor);
         if (isset($_POST['checked']))
-            header("location:register-visitor?id=$id");
+            header("location:displayperson?id=$id");
         else
             header("location:register-visitor-step3?id=$id");
     }

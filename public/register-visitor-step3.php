@@ -13,18 +13,20 @@ if (!isset($_GET['id'])) {
 <head>
     <?php require_once("includes/head.php");
 
-
-
+    $id = $Hash->decrypt($_GET['id']);
+    $id_hash = $_GET['id'];
+    $visit = $database->get_item("visit",'visitor',$id,'id');
     function check_if($value){
+        $Hash = new Encryption();
+        $database = new mysqldatabase(DB_NAME);
         if (isset($_GET['id'])) {
             $id = $Hash->decrypt($_GET['id']);
-            return $id;
+            $id = $database->get_item("companion",'visitor',$id,'id');
+            $val = $database->get_item('companion','id',$id,$value);
+            return $val;
         }
         else return "";
     }
-
-    $id_hash = $_GET['id'];
-    $id = $Hash->decrypt($_GET['id']);
 
     ?>
 </head>
@@ -118,6 +120,7 @@ if (!isset($_GET['id'])) {
                 <div class="tab-content-body">
                     <legend>Registration Form - Step III </legend>
                     <form action="save-visitors.php" method="POST" id="form">
+                        <input type="hidden" value="<?=$visit?>" name="visit">
                         <div class="form-group">
                             <label for="name">Names</label>
                             <input type="text" class="form-control" id="names" name="names" placeholder="Names">
@@ -145,7 +148,7 @@ if (!isset($_GET['id'])) {
                               -webkit-transform: scale(2);
                               -o-transform: scale(2);
                               padding: 6px;">
-                            <span style="margin-left: 5%;font-size: 14px;color:#272C33;font-weight: bold">Save and Continue</span>
+                            <span style="margin-left: 5%;font-size: 14px;color:#272C33;font-weight: bold">Finish adding Companions</span>
                         </div>
                         <div class="pull-right">
                             <a class="btn" href="register-visitor-step2?id=<?=$id_hash?>" style="color: white">Previous</a>
