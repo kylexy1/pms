@@ -436,7 +436,6 @@ require_once '../web-config/database.php';
                                             <th>Location</th>
                                             <th>Phone Number</th>
                                             <th>Contact Person</th>
-                                            <th>Duration</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -448,12 +447,7 @@ require_once '../web-config/database.php';
                                         <tr>
                                             <td><?=$value['name']?></td>
                                             <td><?=$database->get_item('institution','id',$value['id_institution'],'Name');?></td>
-                                                <?php $pr = $database->get_item('location','id',$value['id_location'],'province');
-                                                      $dis = $database->get_item('location','id',$value['id_location'],'district');
-                                                      $cell = $database->get_item('location','id',$value['id_location'],'cell');
-                                                ?>
-
-                                            <td><?=getLocation($pr,$dis,$cell)?></td>
+                                            <td><?=$value['location']?></td>
                                             <td><?=$value['telephone']?></td>
                                             <td><?=$value['contact_person']?></td>
                                             <td><?=$value['duration']?></td>
